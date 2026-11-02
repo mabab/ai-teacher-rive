@@ -1,0 +1,7 @@
+build/
+__pycache__/
+.venv/
+.DS_Store
+# abandoned 3D attempts (TalkingHead, Blender, image-to-3D): large and not part of the demo
+model/
+talkinghead/
