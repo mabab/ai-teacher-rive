@@ -83,6 +83,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@rive-app/webgl2@2.44.2/rive.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/livekit-client@2.15.6/dist/livekit-client.umd.js"></script>
+  <script src="life.js"></script>
   <script>
   (() => {
     const LK = window.LivekitClient;
@@ -99,7 +100,7 @@
     const teacher = new rive.Rive({
       src: "teacher.riv", canvas: $("teacher"), stateMachine: "Teacher", autoplay: true, autoBind: true,
       layout: new rive.Layout({ fit: rive.Fit.Cover, alignment: rive.Alignment.TopCenter }),
-      onLoad: () => { teacher.resizeDrawingSurfaceToCanvas(); vm = teacher.viewModelInstance; show("disconnected"); },
+      onLoad: () => { teacher.resizeDrawingSurfaceToCanvas(); vm = teacher.viewModelInstance; TeacherLife(vm); show("disconnected"); },
     });
     window.addEventListener("resize", () => teacher.resizeDrawingSurfaceToCanvas());
     let shown = null;

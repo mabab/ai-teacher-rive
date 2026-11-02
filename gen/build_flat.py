@@ -4,12 +4,14 @@
 Same contract as the vector teacher (artboard, state machine and view model "Teacher";
 `agentState` string, `viseme` number 0-8), so web/index.html drives either file.
 - one head and one body for every state; each drawing of an arm (keys, in-betweens) and the book is a layer
-  of its own, pivoted at its bottom; scripts/life.luau shows one at a time (y 0, or 3000 to hide it), so an
+  of its own, pivoted at its bottom; web/life.js shows one at a time (y 0, or 3000 to hide it), so an
   arm move is drawn frame by frame: book (disconnected), wave (connecting, initializing), hand to the ear
   (listening), gestures (speaking);
 - mouth patches for visemes 1-8, blink, half lids (pause, reading) and gaze patches;
 - breathing, a slow sway, and a talking bob.
-Run: python3 gen/build_flat.py && (cd flat && rive . --verify)
+No scripts in the file: the "life" (springs, blinks, glances, arm drawings) runs in the page, web/life.js,
+through the view model, so `rive . --once` builds it and it needs no signing.
+Run: python3 gen/build_flat.py && (cd flat && rive . --once) && cp flat/build/teacher2d.riv web/teacher.riv
 """
 import json
 from pathlib import Path
@@ -131,7 +133,6 @@ def loop_layer(name, aid):
                   f'<AnimationState x="200" y="0" animationId="{aid}" id="{sid}"/></StateMachineLayer>')
 
 
-SCRIPT = "0:999"
 MOUTHS = ["mbp", "fv", "dt", "aa", "ee", "oh", "oo", "ch"]
 
 
@@ -176,11 +177,9 @@ def main():
     # the base body, and the body of each arm drawing (shown with it, y 0 or 3000 like the arms)
     bodies = [node("Body base", [image("art/base_body.png", CW / 2, CH / 2)[1]], bind={14: "baseB"})[1]]
     bodies += [node(f"Body {b}", [image(f"art/body_{b}.png", CW / 2, CH / 2)[1]], bind={14: f"{b}B"})[1] for b in BODIES]
-    life = f'<ScriptedDrawable scriptAssetId="{SCRIPT}" name="Life" id="{nid()}"/>'
     figure = node("Breath", [node("Sway", [node("Talk", [node("Scale", arms + [head] + bodies, extra=f' scaleX="{f(S)}" scaleY="{f(S)}"')[1]],
                                                   nid_=ids["talk"])[1]], nid_=ids["sway"], bind={15: "bodyRot"})[1]],
                   x=W / 2, y=H + DROP, nid_=ids["breath"])[1]
-    figure = life + figure
 
     # ---- breathing; a slow sway with the shoulders a beat behind
     loop_layer("Breath", anim("Breath", 240, [keys(ids["breath"], {"scaleY": [(0, 1), (120, 1.009), (240, 1)],
@@ -231,7 +230,6 @@ def main():
           + "".join(f'<ViewModelInstanceNumber propertyValue="{f(START.get(n, 0))}" viewModelPropertyId="{VM[n]}"/>' for n in NUMS) +
           f'</ViewModelInstance></ViewModel>')
     assets = "".join(f'<ImageAsset file="{fl}" name="{Path(fl).stem}" id="{a}"/>' for fl, a in ASSETS.items())
-    assets += f'<ScriptAsset file="scripts/life.luau" name="life" id="{SCRIPT}"/>'
     (PROJ / "scene.rml").write_text(f'<Rive version="1" kind="fragment">{artboard}{vm}{assets}</Rive>\n')
     print("wrote", PROJ / "scene.rml")
 

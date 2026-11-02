@@ -15,11 +15,13 @@ face patches; each arm pose cut out as the region where it differs from the desi
 
 Every state is the same figure: one head, one body. Arm moves are drawn, not slid: for each move there is a key
 pose and one or two in-betweens (`i_*` edits: the arm partway up, the head untouched), each cut out as its own layer.
-`flat/scripts/life.luau` shows one drawing at a time on twos (12 a second), slow out of the rest, settles on the key
+`web/life.js` shows one drawing at a time on twos (12 a second), slow out of the rest, settles on the key
 with a small overshoot, plays the drawings back to lower the arm, and lowers the old arm before raising the new one:
 book while disconnected (lifted into view), a wave while connecting (two drawings alternating), a hand at the ear
 while listening, gestures while speaking. The head, eyes, blinks, shoulders and bun follow the Animator's Survival
-Kit rules described at the top of the script. Same Rive contract as below.
+Kit rules described at the top of the script. The "life" runs in the page and drives the rig through its view
+model, so `teacher.riv` has no scripts: `rive . --once` builds it, it needs no signing, and it plays without Rive's
+watermark. Same Rive contract as below.
 
 A Rive avatar for the LiveKit AI tutor. The teacher is drawn in the browser and follows the agent's state. The agent only sends its voice and the `lk.agent.state` attribute, so there is no avatar video stream.
 
@@ -41,7 +43,7 @@ A Rive avatar for the LiveKit AI tutor. The teacher is drawn in the browser and 
 livekit-server --dev --bind 127.0.0.1                 # keys devkey / secret
 cd agent && .venv/bin/python tutor.py dev             # the agent; reads OPENAI_API_KEY from the backend .env
 cd agent && .venv/bin/python serve.py                 # http://127.0.0.1:8773
-python3 gen/build_teacher.py && rive . --once && cp build/teacher.riv web/   # after changing the rig
+python3 gen/build_flat.py && (cd flat && rive . --once) && cp flat/build/teacher2d.riv web/teacher.riv   # after changing the rig
 ```
 
 Set up the venv once: `python3.13 -m venv .venv && .venv/bin/pip install "livekit-agents[openai,silero]~=1.2" livekit-api`.

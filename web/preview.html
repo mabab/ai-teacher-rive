@@ -3,11 +3,12 @@
 <style>html,body{margin:0;height:100%;background:linear-gradient(#8e7bff,#4b2fcf)}canvas{width:600px;height:720px;display:block}</style></head>
 <body><canvas id="c" width="600" height="720"></canvas>
 <script src="https://cdn.jsdelivr.net/npm/@rive-app/webgl2@2.44.2/rive.js"></script>
+<script src="life.js"></script>
 <script>
 const q = new URLSearchParams(location.search);
 const r = new rive.Rive({ src: "teacher.riv", canvas: document.getElementById("c"), stateMachine: "Teacher", autoplay: true, autoBind: true,
   layout: new rive.Layout({ fit: rive.Fit.Contain }),
-  onLoad: () => { r.resizeDrawingSurfaceToCanvas(); window.vm = r.viewModelInstance;
+  onLoad: () => { r.resizeDrawingSurfaceToCanvas(); window.vm = r.viewModelInstance; TeacherLife(vm);
     if (q.get("state")) vm.string("agentState").value = q.get("state");
     if (q.get("viseme")) vm.number("viseme").value = +q.get("viseme");
     window.ready = true; } });

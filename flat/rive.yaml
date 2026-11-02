@@ -2,3 +2,6 @@ name: teacher2d
 logs:
   file: build/rive.log
   problems: build/problems.log
+push:
+  projectId: 46702
+  fileId: 2700122
